@@ -3,13 +3,13 @@ precision highp float;
 
 layout(location = 0) out vec4 fragColor;
 
-// 필요한 uniforms
+// Define uniforms
 layout(location = 0) uniform float time;
 layout(location = 1) uniform float minimumGlowSum;
 layout(location = 2) uniform float glowIntensity;
 layout(location = 3) uniform float metaballs;
 
-// 30개의 metaball만 남기기
+// Limit to 30 metaballs
 layout(location = 4) uniform vec3 metaball1;
 layout(location = 5) uniform vec3 metaball2;
 layout(location = 6) uniform vec3 metaball3;
@@ -41,7 +41,6 @@ layout(location = 31) uniform vec3 metaball28;
 layout(location = 32) uniform vec3 metaball29;
 layout(location = 33) uniform vec3 metaball30;
 
-// addSum 함수와 getSum 함수도 30개로 제한
 float addSum(vec3 metaball, vec2 coords) {
     float dx = metaball.x - coords.x;
     float dy = metaball.y - coords.y;
@@ -55,7 +54,7 @@ float getSum(vec2 coords) {
     sum += addSum(metaball1, coords);
     if (metaballs < 2.0) return sum;
     sum += addSum(metaball2, coords);
-    // ...
+    // Continue for all 30 metaballs
     if (metaballs < 30.0) return sum;
     sum += addSum(metaball30, coords);
     return sum;
@@ -68,7 +67,7 @@ void main() {
         fragColor = vec4(1, 1, 1, 1);
     } else if (sum > minimumGlowSum) {
         float n = ((sum - minimumGlowSum) / (1.0 - minimumGlowSum)) * glowIntensity;
-        fragColor = vec4(n) + ((noise(vec4(coords, time, 0.0)) - 0.5) / 255.0);
+        fragColor = vec4(n); // Removed noise
     } else {
         fragColor = vec4(0, 0, 0, 0);
     }
